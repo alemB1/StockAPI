@@ -1,20 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace StockAPI.Models
+namespace StockAPI.Dtos.Stock
 {
-    public class Stock
+    public class CreateStockRequestDto
     {
-        public int Id { get; set; }
-        public string Symbol { get; set; } = string.Empty; // avoid null reference errorss
+        public string Symbol { get; set; } = string.Empty;
         public string CompanyName { get; set; }
-        [Column(TypeName = "decimal(18,2)")]
         public decimal Money { get; set; }
-        [Column(TypeName = "decimal(18,2)")]
         public decimal Purchase { get; set; }
 
         public decimal LastDiv { get; set; }
         public string Industry { get; set; } = string.Empty;
         public long MarketCap { get; set; }
-        public List<Comment> Comments { get; set; } = new List<Comment>();
+
+        // sve osim id-a i komentara
     }
 }
