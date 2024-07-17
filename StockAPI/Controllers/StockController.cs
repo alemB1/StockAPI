@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using StockAPI.Data;
 using StockAPI.Dtos.Stock;
+using StockAPI.Interfaces;
 using StockAPI.Mappers;
 
 namespace StockAPI.Controllers
@@ -11,15 +12,18 @@ namespace StockAPI.Controllers
     public class StockController:ControllerBase
     {
         private readonly ApplicationDBContext _context;
-        public StockController(ApplicationDBContext context)
+        private readonly IStockRepository _stockRepository;
+        public StockController(ApplicationDBContext context, IStockRepository stockRepository)
         {
+            _stockRepository = stockRepository;
             _context = context;
+            // kasnije makni ovo
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll() 
         {
-            var stocks = await _context.Stock.ToListAsync();
+            var stocks = await _stockRepository.GetAllAsync();
             var stockDto = stocks.Select(s => s.ToStockDto());
             return Ok(stocks);
         }
