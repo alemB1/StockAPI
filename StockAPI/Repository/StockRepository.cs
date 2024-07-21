@@ -37,13 +37,13 @@ namespace StockAPI.Repository
 
         public async Task<List<Stock>> GetAllAsync()
         {
-            return await _context.Stock.ToListAsync();
+            return await _context.Stock.Include(c => c.Comments).ToListAsync();
         }
 
 
         public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto stockDto)
         {
-            var existingStock = await _context.Stock.FirstOrDefaultAsync(x => x.Id == id);
+            var existingStock = await _context.Stock.Include(c => c.Comments).FirstOrDefaultAsync(i => i.Id == id);
             if (existingStock == null)
                 return null;
 

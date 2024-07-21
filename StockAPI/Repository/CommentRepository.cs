@@ -16,5 +16,10 @@ namespace StockAPI.Repository
         {
             return await _context.Comment.ToListAsync();
         }
+
+        public async Task<Comment?> GetByIdAsync(int id)
+        {
+            return await _context.Comment.FindAsync(id);
+        }
     }
 }
