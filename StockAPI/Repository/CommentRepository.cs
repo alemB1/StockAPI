@@ -20,6 +20,17 @@ namespace StockAPI.Repository
             return commentModel;
         }
 
+        public async Task<Comment?> DeleteAsync(int id)
+        {
+            var commentModel = await _context.Comment.FirstOrDefaultAsync(x => x.Id == id);
+            if (commentModel == null)
+                return null;
+
+            _context.Comment.Remove(commentModel); // remove doesnt have await
+            await _context.SaveChangesAsync();
+            return commentModel;
+        }
+
         public async Task<List<Comment>> GetAllAsync()
         {
             return await _context.Comment.ToListAsync();

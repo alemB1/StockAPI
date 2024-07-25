@@ -65,5 +65,16 @@ namespace StockAPI.Controllers
 
             return Ok(comment.ToCommentDto());
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var commentModel = await _commentRepository.DeleteAsync(id);
+            if (commentModel == null)
+                return NotFound("Comment does not exist");
+
+            return Ok(commentModel); 
+        }
     }
 }
