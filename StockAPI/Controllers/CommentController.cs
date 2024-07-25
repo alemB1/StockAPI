@@ -8,19 +8,19 @@ namespace StockAPI.Controllers
 {
     [Route("api/comment")]
     [ApiController]
-    public class CommentController:ControllerBase
+    public class CommentController : ControllerBase
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IStockRepository _stockRepository;
         public CommentController(ICommentRepository commentRepo, IStockRepository stockRepo)
         {
-            _commentRepository = commentRepo; 
+            _commentRepository = commentRepo;
             _stockRepository = stockRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
-        { 
+        {
             var comments = await _commentRepository.GetAllAsync();
 
             var commentDto = comments.Select(s => s.ToCommentDto());
@@ -29,11 +29,11 @@ namespace StockAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromRoute] int id) 
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var comment = await _commentRepository.GetByIdAsync(id);
 
-            if (comment == null) 
+            if (comment == null)
             {
                 return NotFound();
             }
@@ -51,7 +51,19 @@ namespace StockAPI.Controllers
 
             var commentModel = commentDto.ToCommentFromCreate(stockId);
             await _commentRepository.CreateAsync(commentModel);
-            return CreatedAtAction(nameof(GetById), new {id = commentModel }, commentModel.ToCommentDto());
+            return CreatedAtAction(nameof(GetById), new { id = commentModel.Id }, commentModel.ToCommentDto());
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto updateDto)
+        {
+            var comment = await _commentRepository.UpdateAsync(id, updateDto.ToCommentFromUpdate(id));
+
+            if (comment == null)
+                return NotFound("Comment not found");
+
+            return Ok(comment.ToCommentDto());
         }
     }
 }
