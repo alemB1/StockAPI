@@ -1,11 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using StockAPI.Models;
 
+
+// EtFCore wasnt installed properly - fixed error
 namespace StockAPI.Data
 {
-    public class ApplicationDBContext:DbContext
+    public class ApplicationDBContext : IdentityDbContext<AppUser>
     {
-        public ApplicationDBContext(DbContextOptions dbContextOptions):base(dbContextOptions)
+        public ApplicationDBContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
         {
             
         }
