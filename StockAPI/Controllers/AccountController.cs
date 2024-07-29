@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StockAPI.Dtos.Account;
+using StockAPI.Interfaces;
 using StockAPI.Models;
 
 namespace StockAPI.Controllers
@@ -10,9 +11,11 @@ namespace StockAPI.Controllers
     public class AccountController:ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
-        public AccountController(UserManager<AppUser> userManager)
+        private readonly ITokenService _tokensService;
+        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService)
         {
             _userManager = userManager;
+            _tokensService = tokenService;
         }
 
         [HttpPost("register")]
@@ -38,7 +41,16 @@ namespace StockAPI.Controllers
                     // not a good idea to create an admin signin through this
                     if (roleResult.Succeeded)
                     {
-                        return Ok("User created");
+                        return Ok
+                        (
+                            //return token string from dto
+                            new NewUserDto
+                            {
+                                UserName = appUser.UserName,
+                                Email = appUser.Email,
+                                Token = _tokensService.CreateToken(appUser)
+                            }
+                        );
                     }
                     else
                     {
