@@ -1,5 +1,8 @@
-﻿namespace StockAPI.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace StockAPI.Models
 {
+    [Table("Comments")]
     public class Comment
     {
         public int Id { get; set; }
