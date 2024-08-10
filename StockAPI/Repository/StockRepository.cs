@@ -89,13 +89,10 @@ namespace StockAPI.Repository
         {
             return _context.Stock.AnyAsync(s => s.Id == id);
         }
-        
-
-        // pt2
 
         public async Task<Stock?> GetBySymbolAsync(string symbol)
         {
-            return await _context.Stock.FirstOrDefaultAsync(s => s.Symbol == symbol);
+            return await _context.Stock.FirstOrDefaultAsync(s => s.Symbol == symbol); // new
         }
     }
 }
