@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using StockAPI.Dtos.Comment;
+using StockAPI.Extension;
 using StockAPI.Interfaces;
 using StockAPI.Mappers;
+using StockAPI.Models;
 using System.Runtime.InteropServices;
 
 namespace StockAPI.Controllers
@@ -12,10 +15,13 @@ namespace StockAPI.Controllers
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IStockRepository _stockRepository;
-        public CommentController(ICommentRepository commentRepo, IStockRepository stockRepo)
+        private readonly UserManager<AppUser> _userManager;
+        public CommentController(ICommentRepository commentRepo, IStockRepository stockRepo
+            , UserManager<AppUser> userManager)
         {
             _commentRepository = commentRepo;
             _stockRepository = stockRepo;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -59,7 +65,12 @@ namespace StockAPI.Controllers
                 return BadRequest("Stock does not exist");
             }
 
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+
+            
             var commentModel = commentDto.ToCommentFromCreate(stockId);
+            commentModel.AppUserId = appUser.Id; // add includes in repository; defferd execution
             await _commentRepository.CreateAsync(commentModel);
             return CreatedAtAction(nameof(GetById), new { id = commentModel.Id }, commentModel.ToCommentDto());
         }
